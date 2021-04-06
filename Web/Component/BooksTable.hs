@@ -25,13 +25,13 @@ instance Component BooksTable BooksTableController where
     initialState = BooksTable {books = Nothing, booksQuery = buildQuery (query @Book) }
 
     componentDidMount = fetchBooks
-    
+
     render BooksTable { .. } = [hsx|
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col" onclick={callServerAction (SetOrderBy "title")}>Title</th>
-                    <th scope="col" onclick={callServerAction (SetOrderBy "published_at")}>Published At</th>
+                    <th scope="col" style="cursor: pointer;" onclick={callServerAction (SetOrderBy "title")}>Title</th>
+                    <th scope="col" style="cursor: pointer;" onclick={callServerAction (SetOrderBy "published_at")}>Published At</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,7 +52,7 @@ instance Component BooksTable BooksTableController where
 
             onChange :: Text
             onChange = "callServerAction('SetSearchQuery { searchQuery = \"' + this.value + '\" }')"
-            
+
             searchQuery :: Text
             searchQuery =
                 booksQuery
