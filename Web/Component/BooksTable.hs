@@ -21,6 +21,8 @@ data BooksTableController
     | SetOrderBy { column :: Text }
     deriving (Eq, Show, Data, Read)
 
+$(deriveSSC ''BooksTableController)
+
 instance Component BooksTable BooksTableController where
     initialState = BooksTable {books = Nothing, booksQuery = buildQuery (query @Book) }
 
@@ -30,8 +32,8 @@ instance Component BooksTable BooksTableController where
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col" style="cursor: pointer;" onclick={callServerAction (SetOrderBy "title")}>Title</th>
-                    <th scope="col" style="cursor: pointer;" onclick={callServerAction (SetOrderBy "published_at")}>Published At</th>
+                    <th scope="col" style="cursor: pointer;" onclick="callServerAction('SetOrderBy', { column: 'title' })">Title</th>
+                    <th scope="col" style="cursor: pointer;" onclick="callServerAction('SetOrderBy', { column: 'published_at' })">Published At</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +41,7 @@ instance Component BooksTable BooksTableController where
             </tbody>
         </table>
         {when (isNothing books) loadingIndicator}
-        <input type="text" value={inputValue searchQuery} onkeyup={onChange}/>
+        <input type="text" value={inputValue searchQuery} onkeyup="callServerAction('SetSearchQuery', { searchQuery: this.value })"/>
     |]
         where
             renderRows books = forEach books renderBook
@@ -49,9 +51,6 @@ instance Component BooksTable BooksTableController where
                     <td>{get #publishedAt book}</td>
                 </tr>
             |]
-
-            onChange :: Text
-            onChange = "callServerAction('SetSearchQuery { searchQuery = \"' + this.value + '\" }')"
 
             searchQuery :: Text
             searchQuery =

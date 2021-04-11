@@ -9,16 +9,18 @@ data Counter = Counter { value :: !Int }
 data CounterController
     = IncrementCounterAction
     | SetCounterValue { newValue :: !Int }
-    deriving (Eq, Show, Data, Read)
+    deriving (Eq, Show, Data)
+
+$(deriveSSC ''CounterController)
 
 instance Component Counter CounterController where
     initialState = Counter { value = 0 }
     
     render Counter { value } = [hsx|
         Current: {value} <br />
-        <button onclick={callServerAction IncrementCounterAction}>Plus One</button>
+        <button onclick="callServerAction('IncrementCounterAction')">Plus One</button>
         <hr />
-        <input type="number" value={inputValue value} onchange="callServerAction('SetCounterValue { newValue = ' + this.value + ' }')"/>
+        <input type="number" value={inputValue value} onchange="callServerAction('SetCounterValue', { newValue: parseInt(this.value, 10) })"/>
     |]
     
     action state IncrementCounterAction = do
