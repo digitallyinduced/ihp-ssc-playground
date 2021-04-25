@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Web.Component.BooksTable where
 
 import IHP.ViewPrelude hiding (fetch, query)
@@ -9,6 +10,9 @@ import IHP.ServerSideComponent.ControllerFunctions
 import IHP.QueryBuilder
 import qualified Database.PostgreSQL.Simple.ToField as PG
 import qualified Data.Text as Text
+
+import Web.Component.Counter
+import IHP.ServerSideComponent.ViewFunctions
 
 data BooksTable = BooksTable
     { books :: Maybe [Book]
@@ -42,8 +46,16 @@ instance Component BooksTable BooksTableController where
         </table>
         {when (isNothing books) loadingIndicator}
         <input type="text" value={inputValue searchQuery} onkeyup="callServerAction('SetSearchQuery', { searchQuery: this.value })"/>
+
+
+        <div>
+            <h2>Nested Counter</h2>
+            {counter}
+        </div>
     |]
         where
+            counter = component @Counter
+
             renderRows books = forEach books renderBook
             renderBook book = [hsx|
                 <tr>

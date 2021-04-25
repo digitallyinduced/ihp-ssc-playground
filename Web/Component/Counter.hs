@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Web.Component.Counter where
 
 import IHP.ViewPrelude
